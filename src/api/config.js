@@ -1,5 +1,4 @@
-// Shared configuration
-export const API_URL = `${window.location.protocol}//${window.location.hostname}:3001/api`;
+export const API_URL = "https://petanque-connect.onrender.com/api";
 
 export const authHeader = () => {
     const token = localStorage.getItem('token');

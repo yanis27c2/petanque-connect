@@ -1,7 +1,6 @@
 import { io } from 'socket.io-client';
 
-// Dynamic URL based on current host (to support mobile on LAN)
-const SOCKET_URL = `${window.location.protocol}//${window.location.hostname}:3001`;
+const SOCKET_URL = "https://petanque-connect.onrender.com";
 
 const socket = io(SOCKET_URL, {
     autoConnect: false,
