@@ -14,9 +14,6 @@ import postRoutes from './routes/posts.js';
 import newsRoutes from './routes/news.js';
 import resultRoutes from './routes/results.js';
 
-// Initialisation de la base PostgreSQL
-import { initDB } from './init.js';
-
 const app = express();
 const server = http.createServer(app);
 
@@ -99,18 +96,6 @@ io.on('connection', (socket) => {
 });
 
 const PORT = process.env.PORT || 3001;
-
-// 🚀 Démarrage du serveur + création automatique de la table users
-const start = async () => {
-    try {
-        await initDB(); // ← crée la table si elle n'existe pas
-        server.listen(PORT, '0.0.0.0', () => {
-            console.log(`Server running on port ${PORT}`);
-        });
-    } catch (err) {
-        console.error('Erreur au démarrage du serveur :', err);
-        process.exit(1);
-    }
-};
-
-start();
+server.listen(PORT, '0.0.0.0', () => {
+    console.log(`Server running on port ${PORT}`);
+});
