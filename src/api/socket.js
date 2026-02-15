@@ -1,6 +1,6 @@
 import { io } from 'socket.io-client';
 
-const SOCKET_URL = "https://petanque-connect.onrender.com";
+const SOCKET_URL = `http://${window.location.hostname}:3001`;
 
 const socket = io(SOCKET_URL, {
     autoConnect: false,

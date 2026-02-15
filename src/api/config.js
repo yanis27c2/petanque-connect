@@ -1,4 +1,4 @@
-export const API_URL = "https://petanque-connect.onrender.com/api";
+export const API_URL = `http://${window.location.hostname}:3001/api`;
 
 export const authHeader = () => {
     const token = localStorage.getItem('token');
