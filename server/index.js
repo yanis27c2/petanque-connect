@@ -99,17 +99,12 @@ io.on('connection', (socket) => {
 });
 
 const PORT = process.env.PORT || 3001;
-<<<<<<< HEAD
-server.listen(PORT, '0.0.0.0', () => {
-    console.log(`Server running on port ${PORT}`);
-});
-=======
 
 // 🚀 Démarrage du serveur + création automatique de la table users
 const start = async () => {
     try {
         await initDB(); // ← crée la table si elle n'existe pas
-        server.listen(PORT, () => {
+        server.listen(PORT, '0.0.0.0', () => {
             console.log(`Server running on port ${PORT}`);
         });
     } catch (err) {
@@ -119,4 +114,3 @@ const start = async () => {
 };
 
 start();
->>>>>>> 39fa13d3145b9360e0338ba092787af7760e5060
