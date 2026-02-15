@@ -1,7 +1,7 @@
-import fs from 'fs';
-import path from 'path';
-import { fileURLToPath } from 'url';
+import pkg from 'pg';
+const { Pool } = pkg;
 
+<<<<<<< HEAD
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const DB_DIR = path.join(__dirname, '..', 'db');
 
@@ -29,3 +29,9 @@ export function findUserById(id) {
     const users = readDB('users');
     return users.find(u => u.id === id) || null;
 }
+=======
+export const pool = new Pool({
+    connectionString: process.env.DATABASE_URL,
+    ssl: { rejectUnauthorized: false }
+});
+>>>>>>> 39fa13d3145b9360e0338ba092787af7760e5060
