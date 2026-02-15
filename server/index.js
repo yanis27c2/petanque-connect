@@ -3,9 +3,6 @@ import http from 'http';
 import { Server } from 'socket.io';
 import cors from 'cors';
 import bodyParser from 'body-parser';
-import fs from 'fs';
-import path from 'path';
-import { fileURLToPath } from 'url';
 
 // Routes
 import authRoutes from './routes/auth.js';
@@ -17,10 +14,11 @@ import postRoutes from './routes/posts.js';
 import newsRoutes from './routes/news.js';
 import resultRoutes from './routes/results.js';
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
+// Initialisation de la base PostgreSQL
+import { initDB } from './init.js';
+
 const app = express();
 const server = http.createServer(app);
-// Force restart
 
 // Middleware
 app.use(cors());
@@ -30,7 +28,7 @@ app.use(bodyParser.urlencoded({ limit: '10mb', extended: true }));
 // Socket.io Setup
 const io = new Server(server, {
     cors: {
-        origin: "*", // Allow all for local network dev
+        origin: "*",
         methods: ["GET", "POST"]
     }
 });
@@ -51,8 +49,6 @@ app.use('/api/posts', postRoutes);
 app.use('/api/news', newsRoutes);
 app.use('/api/results', resultRoutes);
 
-
-
 // Socket Logic
 io.on('connection', (socket) => {
     console.log(`User connected: ${socket.id}`);
@@ -64,18 +60,15 @@ io.on('connection', (socket) => {
         io.emit('user_status', { userId, status: 'online' });
     });
 
-    // --- Contest room for team real-time updates ---
     socket.on('join_contest', (contestId) => {
         socket.join(`contest:${contestId}`);
         console.log(`Socket ${socket.id} joined contest:${contestId}`);
     });
+
     socket.on('leave_contest', (contestId) => {
         socket.leave(`contest:${contestId}`);
     });
 
-
-
-    // --- DM / Conversation Chat ---
     socket.on('send_message', (data) => {
         io.to(data.conversationId).emit('receive_message', data);
     });
@@ -88,8 +81,6 @@ io.on('connection', (socket) => {
     socket.on('typing', (data) => {
         socket.to(data.conversationId).emit('user_typing', data);
     });
-
-
 
     socket.on('disconnect', () => {
         let userId = null;
@@ -108,6 +99,18 @@ io.on('connection', (socket) => {
 });
 
 const PORT = process.env.PORT || 3001;
-server.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
-});
+
+// 🚀 Démarrage du serveur + création automatique de la table users
+const start = async () => {
+    try {
+        await initDB(); // ← crée la table si elle n'existe pas
+        server.listen(PORT, () => {
+            console.log(`Server running on port ${PORT}`);
+        });
+    } catch (err) {
+        console.error('Erreur au démarrage du serveur :', err);
+        process.exit(1);
+    }
+};
+
+start();
